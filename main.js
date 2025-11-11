@@ -1,8 +1,9 @@
 // Main process entry point for the Electron application.
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow } = require('electron');
 
-// Keep a global reference to prevent garbage collection of the window.
+// Keep global references to prevent garbage collection of windows.
 let mainWindow;
+const childWindows = new Set();
 
 // Create the main application window once Electron is ready.
 const createWindow = () => {
@@ -19,9 +20,44 @@ const createWindow = () => {
   // Load the Notion Mail web app.
   mainWindow.loadURL('https://mail.notion.so/');
 
+  // Allow popup-based auth flows by creating a dedicated child window.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (!mainWindow) {
+      return { action: 'deny' };
+    }
+
+    const popup = new BrowserWindow({
+      parent: mainWindow,
+      modal: false,
+      width: 1000,
+      height: 700,
+      autoHideMenuBar: true,
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+        session: mainWindow.webContents.session
+      }
+    });
+
+    popup.loadURL(url);
+
+    childWindows.add(popup);
+    popup.on('closed', () => {
+      childWindows.delete(popup);
+    });
+
+    return { action: 'deny' };
+  });
+
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
     mainWindow = null;
+    childWindows.forEach((child) => {
+      if (!child.isDestroyed()) {
+        child.close();
+      }
+    });
+    childWindows.clear();
   });
 };
 
