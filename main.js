@@ -10,12 +10,16 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    autoHideMenuBar: true, // Hide the menu bar for a clean window.
+    autoHideMenuBar: true,
     webPreferences: {
-      contextIsolation: true, // Isolate context for improved security.
-      nodeIntegration: false // Disable Node.js integration in the renderer.
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,              // wichtig für OAuth-Fenster
+      nativeWindowOpen: true,      // erlaubt echte Popup-Fenster
+      partition: 'persist:notion'  // sorgt für gemeinsame Sessions
     }
   });
+
 
   // Load the Notion Mail web app.
   mainWindow.loadURL('https://mail.notion.so/');
