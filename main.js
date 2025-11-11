@@ -21,32 +21,33 @@ const createWindow = () => {
   mainWindow.loadURL('https://mail.notion.so/');
 
   // Allow popup-based auth flows by creating a dedicated child window.
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  mainWindow.webContents.setWindowOpenHandler(() => {
     if (!mainWindow) {
       return { action: 'deny' };
     }
 
-    const popup = new BrowserWindow({
-      parent: mainWindow,
-      modal: false,
-      width: 1000,
-      height: 700,
-      autoHideMenuBar: true,
-      webPreferences: {
-        contextIsolation: true,
-        nodeIntegration: false,
-        session: mainWindow.webContents.session
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        parent: mainWindow,
+        modal: false,
+        width: 1000,
+        height: 700,
+        autoHideMenuBar: true,
+        webPreferences: {
+          contextIsolation: true,
+          nodeIntegration: false,
+          session: mainWindow.webContents.session
+        }
       }
+    };
+  });
+
+  mainWindow.webContents.on('did-create-window', (event, childWindow) => {
+    childWindows.add(childWindow);
+    childWindow.on('closed', () => {
+      childWindows.delete(childWindow);
     });
-
-    popup.loadURL(url);
-
-    childWindows.add(popup);
-    popup.on('closed', () => {
-      childWindows.delete(popup);
-    });
-
-    return { action: 'deny' };
   });
 
   // Emitted when the window is closed.
