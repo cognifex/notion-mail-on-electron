@@ -1,0 +1,14 @@
+{
+  "name": "notion-mail-electron",
+  "version": "1.0.0",
+  "description": "Simple Electron wrapper for https://mail.notion.so/.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.2.0"
+  }
+}
