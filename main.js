@@ -4,7 +4,10 @@ const { app, BrowserWindow, shell, session } = require('electron');
 // URLs and shared session configuration used across the app.
 const NOTION_MAIL_URL = 'https://mail.notion.so/';
 const NOTION_PARTITION = 'persist:notion';
-const notionSession = session.fromPartition(NOTION_PARTITION, { cache: true });
+
+// The session can only be created after the app is ready, so defer the lookup
+// until the first window is being constructed.
+let notionSession;
 
 // Keep global references to prevent garbage collection of windows.
 let mainWindow;
@@ -91,6 +94,10 @@ const attachNavigationGuards = (webContents) => {
 
 // Create the main application window once Electron is ready.
 const createWindow = () => {
+  if (!notionSession) {
+    notionSession = session.fromPartition(NOTION_PARTITION, { cache: true });
+  }
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
