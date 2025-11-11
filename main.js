@@ -1,5 +1,5 @@
 // Main process entry point for the Electron application.
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 
 // Keep a global reference to prevent garbage collection of the window.
 let mainWindow;
@@ -18,15 +18,6 @@ const createWindow = () => {
 
   // Load the Notion Mail web app.
   mainWindow.loadURL('https://mail.notion.so/');
-
-  // Ensure authentication popups open in the same window instead of being blocked.
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (mainWindow) {
-      mainWindow.loadURL(url);
-    }
-
-    return { action: 'deny' };
-  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
