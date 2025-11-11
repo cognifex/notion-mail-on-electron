@@ -65,16 +65,7 @@ const createWindow = () => {
 // Automatically create the window when Electron finishes initialization.
 app.whenReady().then(createWindow);
 
-// Quit when all windows are closed, except on macOS where apps traditionally stay active.
+// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-// Re-create the window on macOS when the dock icon is clicked and there are no other windows open.
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
+  app.quit();
 });
