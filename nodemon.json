@@ -1,0 +1,6 @@
+{
+  "watch": ["main.js", "tests", "*.js", "*.html", "*.css"],
+  "ext": "js,json,html,css",
+  "ignore": ["node_modules", ".git", ".github"],
+  "exec": "electron ."
+}

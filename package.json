@@ -4,11 +4,16 @@
   "description": "Simple Electron wrapper for https://mail.notion.so/.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "nodemon --exec \"electron .\"",
+    "test:spectron": "node tests/smoke.test.js"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.2.0"
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "nodemon": "^3.0.3",
+    "spectron": "^15.0.0"
   }
 }
